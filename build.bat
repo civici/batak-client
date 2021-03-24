@@ -1,1 +1,1 @@
-cl /IC:\vcpkg\installed\x64-windows\include main.c network.c pdcurses.lib ws2_32.lib /link /LIBPATH:C:\vcpkg\installed\x64-windows\lib /out:a.exe
+cl /IC:\vcpkg\installed\x64-windows\include main.c network.c payload.c pdcurses.lib ws2_32.lib /link /LIBPATH:C:\vcpkg\installed\x64-windows\lib /out:a.exe

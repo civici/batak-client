@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "network.h"
+#include "payload.h"
 
 #undef MOUSE_MOVED
 
@@ -39,6 +40,9 @@ int main()
             return 0;
         }
 
+        payload_check(coming_payload);
+
+        /*
         unsigned int opcode = coming_payload[0];
         if (opcode == 1)
         {
@@ -67,6 +71,7 @@ int main()
             printf("payload string is %s\n", string);
             free(string);
         } 
+        */
 
         free(coming_payload);
     }
