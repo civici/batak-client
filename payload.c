@@ -3,13 +3,11 @@
 void payload_string(char* payload)
 {
 
-    unsigned char stringLen = payload[1];
-
+    unsigned char stringLen = *payload;
+    printf("string len %d\n", stringLen);
     char* string = calloc(stringLen + 1, 1);
 
-    int byteiterator = 2;
-
-    memcpy(string, &(payload[2]), stringLen);
+    memcpy(string, ++payload, stringLen);
 
     printf("recv string %s\n", string);
     free(string);
@@ -23,7 +21,7 @@ void payload_check(char* payload)
     switch (opcode)
     {
         case 2:
-            payload_string(payload);
+            payload_string(++payload);
             break;
     }
 }
