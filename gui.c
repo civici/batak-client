@@ -143,10 +143,30 @@ char* gui_setUserName()
     }
 }
 
+int gui_blink_thread_signal(int mode)
+{
+    static int blink = 1;
+    if (mode == 0)
+    {
+        blink = 0;
+    }
+    else if (mode == 1)
+    {
+        blink = 1;
+    }
+    else
+    {
+        return blink;
+    }
+
+    return 0;
+
+}
+
 unsigned long __stdcall gui_blink_wait_players(void* w)
 {
     WINDOW* win = subwin(stdscr, 3, 21, 4, 4);
-    while (1)
+    while (gui_blink_thread_signal(2))
     {
         wclear(win);
         wattron(win, A_STANDOUT);
@@ -161,6 +181,10 @@ unsigned long __stdcall gui_blink_wait_players(void* w)
         wrefresh(win);
         Sleep(500);
     }
+    wclear(win);
+    wrefresh(win);
+    delwin(win);
+    return 0;
 }
 
 void gui_init()
