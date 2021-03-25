@@ -4,7 +4,6 @@ void payload_string(char* payload)
 {
 
     unsigned char stringLen = *payload;
-    printf("string len %d\n", stringLen);
     char* string = calloc(stringLen + 1, 1);
 
     memcpy(string, ++payload, stringLen);
@@ -14,14 +13,40 @@ void payload_string(char* payload)
 
 }
 
-void payload_check(char* payload)
+void payload_deck(char* payload)
+{
+    unsigned int cardCount = *payload;
+    
+    for (int i = 0; i < cardCount; i++)
+    {
+        struct Card* c = malloc(sizeof(struct Card));
+        c->koz = *++payload;
+        c->val = *++payload;
+        printf("card created with koz %d val %d\n", c->koz, c->val);
+    }
+    
+}
+
+void payload_check(char* payload, unsigned int payloadbytes)
 {
     unsigned char opcode = payload[0];
-    printf("opcode %d\n", opcode);
+    unsigned char dataCount = *++payload;
+    printf("opcode %d dataCount %d payloadbytes %d\n", opcode, dataCount, payloadbytes);
     switch (opcode)
     {
-        case 2:
-            payload_string(++payload);
+        case OPCODE_STRING:
+        {
+            payload_string(payload);
+            if (dataCount * 2 != payloadbytes - 2)
+                payload_check(++payload + dataCount, payloadbytes - 2 - dataCount);
             break;
+        }
+        case OPCODE_DECK:
+        {
+            payload_deck(payload);
+            if (dataCount * 2 != payloadbytes - 2)
+                payload_check(++payload + dataCount * 2, payloadbytes - 2 - dataCount * 2);
+            break;
+        }
     }
 }

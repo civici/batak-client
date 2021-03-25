@@ -4,6 +4,7 @@
 
 #include "network.h"
 #include "payload.h"
+#include "Card.h"
 
 #undef MOUSE_MOVED
 
@@ -11,22 +12,14 @@
 
 SOCKET connection;
 
-
-struct Card{
-
-    int koz;
-    int val;
-
-};
-
-
 int main()
 {
     
     //initscr();
 
     connection = openconn();
-    puts("test");    
+    int flag = 1;
+    puts("test");
 
     while (1)
     {
@@ -37,45 +30,14 @@ int main()
         if (result < 1)
         {
             puts("exit");
-            return 0;
+            goto TERMINATE;
         }
 
-        payload_check(coming_payload);
-
-        /*
-        unsigned int opcode = coming_payload[0];
-        if (opcode == 1)
-        {
-            unsigned int byteCounter = 2;
-            unsigned int dataCount = coming_payload[1];
-            for (int i = 0; i < dataCount; i++)
-            {
-                struct Card* c = malloc(sizeof(struct Card));
-                c->koz = coming_payload[byteCounter];
-                byteCounter++;
-                c->val = coming_payload[byteCounter];
-                byteCounter++;
-                printf("card created with koz %d val %d\n", c->koz, c->val);
-            }
-        } 
-        else if (opcode == 2)
-        {
-            unsigned int dataCount = coming_payload[1];
-            char* string = calloc(dataCount + 1, 1);
-            unsigned int byteiterator = 2;
-            for (int i = 0; i < dataCount; i++)
-            {
-                string[i] = coming_payload[byteiterator];
-                byteiterator++;
-            }
-            printf("payload string is %s\n", string);
-            free(string);
-        } 
-        */
-
+        payload_check(coming_payload, result);
         free(coming_payload);
     }
 
+    TERMINATE:
     closesocket(connection);
     puts("done");
     return 0;

@@ -3,3 +3,4 @@ main.obj
 network.obj
 .vscode/c_cpp_properties.json
 payload.obj
+.vscode/settings.json
