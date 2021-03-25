@@ -4,11 +4,8 @@
 
 #include "network.h"
 #include "payload.h"
-#include "Card.h"
-
-#undef MOUSE_MOVED
-
-#include <curses.h>
+#include "game/Card.h"
+#include "gui.h"
 
 SOCKET connection;
 
@@ -16,7 +13,7 @@ int main()
 {
     
     //initscr();
-
+    gui_init();
     connection = openconn();
     int flag = 1;
     puts("test");

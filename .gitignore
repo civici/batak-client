@@ -4,3 +4,6 @@ network.obj
 .vscode/c_cpp_properties.json
 payload.obj
 .vscode/settings.json
+Card.obj
+Deck.obj
+gui.obj

@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "Card.h"
+#include "game/Deck.h"
+#include "game/Card.h"
+#include "gui.h"
 
 #define OPCODE_STRING 2
 #define OPCODE_DECK 1

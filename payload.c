@@ -13,17 +13,22 @@ void payload_string(char* payload)
 
 }
 
-void payload_deck(char* payload)
+struct Deck* payload_deck(char* payload)
 {
     unsigned int cardCount = *payload;
     
+    struct Deck* tempdeck = deck_new();
+
     for (int i = 0; i < cardCount; i++)
     {
         struct Card* c = malloc(sizeof(struct Card));
         c->koz = *++payload;
         c->val = *++payload;
-        printf("card created with koz %d val %d\n", c->koz, c->val);
+        //printf("card created with koz %d val %d\n", c->koz, c->val);
+        deck_push(tempdeck, c);
     }
+
+    return tempdeck;
     
 }
 
@@ -43,10 +48,12 @@ void payload_check(char* payload, unsigned int payloadbytes)
         }
         case OPCODE_DECK:
         {
-            payload_deck(payload);
+            struct Deck* deck = payload_deck(payload);
+            gui_printdeck(deck);
             if (dataCount * 2 != payloadbytes - 2)
                 payload_check(++payload + dataCount * 2, payloadbytes - 2 - dataCount * 2);
             break;
         }
+        
     }
 }
