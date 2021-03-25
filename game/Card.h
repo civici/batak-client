@@ -3,10 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <curses.h>
+
 struct Card{
 
     int val;
     int koz;
+    WINDOW* win;
 
 };
 
