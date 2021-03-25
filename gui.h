@@ -28,6 +28,6 @@ void gui_createPlayedCardWin();
 
 char* gui_setUserName();
 
-unsigned long __stdcall gui_blink_wait_players(void* w);
+int gui_blink_thread_signal;
 
-int gui_blink_thread_signal(int mode);
+unsigned long __stdcall gui_blink_wait_players(void* w);

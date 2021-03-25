@@ -54,6 +54,9 @@ int gui_selectHandler(struct Deck* d)
         }
         else if (ch == KEY_ENTER || ch == 0x0D)
         {
+            wclear(d->data[currentWin]->win);
+            wrefresh(d->data[currentWin]->win);
+            delwin(d->data[currentWin]->win);
             printf("input enter win %d\n", currentWin);
             return currentWin;
         }
@@ -61,12 +64,20 @@ int gui_selectHandler(struct Deck* d)
     }
 
     puts("select Handler returning");
-    return 0;
+    return 254;
 
+}
+
+void gui_clearDeckWin()
+{
+    wclear(deckWin);
+    box(deckWin, 0, 0);
+    wrefresh(deckWin);
 }
 
 void gui_printdeck(struct Deck* d)
 {
+    gui_clearDeckWin();
     for (int i = 0; i < d->count; i++)
     {
         struct Card* currentCard = d->data[i];
@@ -143,30 +154,10 @@ char* gui_setUserName()
     }
 }
 
-int gui_blink_thread_signal(int mode)
-{
-    static int blink = 1;
-    if (mode == 0)
-    {
-        blink = 0;
-    }
-    else if (mode == 1)
-    {
-        blink = 1;
-    }
-    else
-    {
-        return blink;
-    }
-
-    return 0;
-
-}
-
 unsigned long __stdcall gui_blink_wait_players(void* w)
 {
     WINDOW* win = subwin(stdscr, 3, 21, 4, 4);
-    while (gui_blink_thread_signal(2))
+    while (gui_blink_thread_signal)
     {
         wclear(win);
         wattron(win, A_STANDOUT);
