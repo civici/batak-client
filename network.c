@@ -4,7 +4,7 @@
 SOCKET openconn()
 {
     char* host = "localhost";
-    char* port = "54321";
+    char* port = "54322";
 
     WSADATA wsaData = {0};
 
@@ -24,6 +24,10 @@ SOCKET openconn()
     }
 
     SOCKET fd = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+
+    int flag = 1;
+    setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char*)&flag, sizeof(int));
+
     if (fd == INVALID_SOCKET)
     {
         puts("socket failed");

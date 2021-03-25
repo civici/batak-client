@@ -5,4 +5,6 @@
 
 #undef MOUSE_MOVED
 
+SOCKET connection;
+
 SOCKET openconn();
