@@ -94,6 +94,12 @@ void payload_check(char* payload, unsigned int payloadbytes)
             waitPlayersThread = CreateThread(NULL, 0, gui_blink_wait_players, NULL, 0, NULL);
             break;
         }
+        case OPCODE_WAIT_PLAYERS_END:
+        {
+            gui_blink_thread_signal(0);
+            puts("wait players end");
+            break;
+        }
     }
 
     switch (opcode)
@@ -139,6 +145,14 @@ void payload_check(char* payload, unsigned int payloadbytes)
             break;
         }
         case OPCODE_WAIT_PLAYERS:
+        {
+            if (dataCount != payloadbytes - 2)
+            {
+                payload_check(++payload, payloadbytes - 2);
+            }
+            break;
+        }
+        case OPCODE_WAIT_PLAYERS_END:
         {
             if (dataCount != payloadbytes - 2)
             {

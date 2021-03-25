@@ -10,7 +10,7 @@
 #include "game/Card.h"
 #include "gui.h"
 
-#define OPCODE_WAIT_PLAEYRS_END 9
+#define OPCODE_WAIT_PLAYERS_END 9
 #define OPCODE_WAIT_PLAYERS     8
 #define OPCODE_GET_NAME         6
 #define OPCODE_SENT_CARD        5
