@@ -36,6 +36,8 @@ struct Deck* currentDeck = NULL;
 
 void payload_check(char* payload, unsigned int payloadbytes)
 {
+    HANDLE waitPlayersThread;
+
     unsigned char opcode = *payload;
     unsigned char dataCount = *++payload;
     printf("opcode %d dataCount %d payloadbytes %d\n", opcode, dataCount, payloadbytes);
@@ -49,7 +51,9 @@ void payload_check(char* payload, unsigned int payloadbytes)
         case OPCODE_DECK:
         {
             currentDeck = payload_deck(payload);
+            puts("printing deck");
             gui_printdeck(currentDeck);
+            puts("printed deck");
             break;
         }
         case OPCODE_GET_CARD:
@@ -69,6 +73,25 @@ void payload_check(char* payload, unsigned int payloadbytes)
             c->val = *++payload;
             printf("card is %d %d\n", c->koz, c->val);
             gui_updatePlayedCardWin(c);
+            break;
+        }
+        case OPCODE_GET_NAME:
+        {
+            puts("opcode name");
+            char* name = gui_setUserName();
+            printf("name is %s\n", name);
+
+            char* outgoing = calloc(1024, 1);
+            outgoing[0] = 7;
+            outgoing[1] = strlen(name);
+            memcpy(&outgoing[2], name, outgoing[1]);
+            free(name); 
+            send(connection, outgoing, outgoing[1] + 2, 0);
+            break;
+        }
+        case OPCODE_WAIT_PLAYERS:
+        {
+            waitPlayersThread = CreateThread(NULL, 0, gui_blink_wait_players, NULL, 0, NULL);
             break;
         }
     }
@@ -105,6 +128,23 @@ void payload_check(char* payload, unsigned int payloadbytes)
             {
                 payload_check(++payload, payloadbytes - 4);
             }
+            break;
+        }
+        case OPCODE_GET_NAME:
+        {
+            if (dataCount != payloadbytes - 2)
+            {
+                payload_check(++payload, payloadbytes - 2);
+            }
+            break;
+        }
+        case OPCODE_WAIT_PLAYERS:
+        {
+            if (dataCount != payloadbytes - 2)
+            {
+                payload_check(++payload, payloadbytes - 2);
+            }
+            break;
         }
     }
 

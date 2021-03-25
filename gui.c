@@ -70,15 +70,12 @@ void gui_printdeck(struct Deck* d)
     for (int i = 0; i < d->count; i++)
     {
         struct Card* currentCard = d->data[i];
-        currentCard->win = subwin(stdscr, 3, 3, 5, (i * 3) + 1);
+        currentCard->win = subwin(deckWin, 3, 3, deckWin->_begy + 1, deckWin->_begx + (i * 3) + 1);
         box(currentCard->win, 0, 0);
         char cardstr[3] = {currentCard->koz + '0', currentCard->val + '0', 0};
         mvwaddstr(currentCard->win, 1, 1, cardstr );
         wrefresh(currentCard->win);
     }
-
-    //gui_selectHandler(d);
-
 }
 
 void gui_updatePlayedCardWin(struct Card* c)
@@ -91,6 +88,81 @@ void gui_updatePlayedCardWin(struct Card* c)
 
 }
 
+void gui_createDeckWindow()
+{
+    puts("creating deckwin");
+    deckWin = subwin(stdscr, 5, getmaxx(stdscr) - 2, 15, 1);
+    box(deckWin, 0, 0);
+    wrefresh(deckWin);
+}
+
+void gui_createPlayedCardWin()
+{
+    playedCardWin = subwin(stdscr, 3, 3, 5, 15);
+    box(playedCardWin, 0, 0);
+    wrefresh(playedCardWin);
+}
+
+char* gui_setUserName()
+{
+    WINDOW* nameInputField = subwin(stdscr, 5, 20, 1, 1);
+    box(nameInputField, 0, 0);
+    wrefresh(nameInputField);
+    char* buf = calloc(1024, 1);
+    int counter = 0;
+    while (1)
+    {
+        int ch = getch();
+        if (ch == 13)
+        {
+            wclear(nameInputField);
+            wrefresh(nameInputField);
+            delwin(nameInputField);
+            return buf;
+        }
+
+        if (ch == 8 && counter > 0)
+        {
+            counter--;
+            buf[counter] = 0;
+            wclear(nameInputField);
+            box(nameInputField, 0, 0);
+            mvwaddstr(nameInputField, 1, 1, buf);
+            wrefresh(nameInputField);
+        }
+
+        if (ch >= '0' && ch <= 'z')
+        {
+            buf[counter] = ch;
+            counter++;
+            wclear(nameInputField);
+            box(nameInputField, 0, 0);
+            mvwaddstr(nameInputField, 1, 1, buf);
+            wrefresh(nameInputField);
+        }
+    }
+}
+
+unsigned long __stdcall gui_blink_wait_players(void* w)
+{
+    WINDOW* win = subwin(stdscr, 3, 21, 4, 4);
+    while (1)
+    {
+        wclear(win);
+        wattron(win, A_STANDOUT);
+        box(win, 0, 0);
+        wattroff(win, A_STANDOUT);
+        mvwaddstr(win, 1, 1, "waiting for players");
+        wrefresh(win);
+        Sleep(500);
+        wclear(win);
+        box(win, 0, 0);
+        mvwaddstr(win, 1, 1, "waiting for players");
+        wrefresh(win);
+        Sleep(500);
+    }
+}
+
 void gui_init()
 {
     initscr();
@@ -99,6 +171,6 @@ void gui_init()
     raw();
     keypad(stdscr, 1);
     refresh();
-    playedCardWin = subwin(stdscr, 3, 3, 15, 15);
-
+    //gui_createDeckWindow();
+    //gui_createPlayedCardWin();
 }
