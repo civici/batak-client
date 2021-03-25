@@ -24,6 +24,7 @@ struct Deck* payload_deck(char* payload)
         struct Card* c = malloc(sizeof(struct Card));
         c->koz = *++payload;
         c->val = *++payload;
+        c->win = NULL;
         //printf("card created with koz %d val %d\n", c->koz, c->val);
         deck_push(tempdeck, c);
     }
@@ -32,7 +33,6 @@ struct Deck* payload_deck(char* payload)
     
 }
 
-struct Deck* currentDeck = NULL;
 
 void payload_check(char* payload, unsigned int payloadbytes)
 {
@@ -50,6 +50,11 @@ void payload_check(char* payload, unsigned int payloadbytes)
         }
         case OPCODE_DECK:
         {
+            static int guiDeckWinInit = 0;
+            if (guiDeckWinInit == 0)
+            {
+                gui_createDeckWindow();
+            }
             currentDeck = payload_deck(payload);
             puts("printing deck");
             gui_printdeck(currentDeck);
@@ -91,12 +96,13 @@ void payload_check(char* payload, unsigned int payloadbytes)
         }
         case OPCODE_WAIT_PLAYERS:
         {
+            gui_blink_thread_signal = 1;
             waitPlayersThread = CreateThread(NULL, 0, gui_blink_wait_players, NULL, 0, NULL);
             break;
         }
         case OPCODE_WAIT_PLAYERS_END:
         {
-            gui_blink_thread_signal(0);
+            gui_blink_thread_signal = 0;
             puts("wait players end");
             break;
         }
