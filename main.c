@@ -7,15 +7,10 @@
 #include "game/Card.h"
 #include "gui.h"
 
-SOCKET connection;
-
 int main()
 {
-    
-    //initscr();
     gui_init();
     connection = openconn();
-    int flag = 1;
     puts("test");
 
     while (1)
